@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Forge QA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #18181B;
+      --ember: #E8882A;
+      --ember-light: #F0A040;
+      --cream: #F5F1EA;
+      --stone: #8A8275;
+      --dark-bg: #1C1C1A;
+      --dark-surface: #252522;
+      --dark-divider: #333330;
+      --body-text: #C4C0B8;
+      --heading-text: #E8E4DC;
+      --green: #4CAF50;
+      --red: #E53935;
+    }
+
+    body {
+      background: var(--dark-bg);
+      color: var(--body-text);
+      font-family: 'DM Sans', sans-serif;
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    .header {
+      background: var(--dark-surface);
+      border-bottom: 1px solid var(--dark-divider);
+      padding: 14px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .wordmark {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: 18px;
+      color: var(--ember);
+      letter-spacing: 0.08em;
+    }
+
+    .header-label {
+      font-size: 11px;
+      color: var(--stone);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .stats {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .stat {
+      flex: 1;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: var(--stone);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+    }
+
+    .tab {
+      flex: 1;
+      background: transparent;
+      border: 1px solid var(--dark-divider);
+      color: var(--stone);
+      border-radius: 6px;
+      padding: 7px 0;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-transform: capitalize;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.15s;
+    }
+
+    .tab.active {
+      background: var(--ember);
+      border-color: var(--ember);
+      color: #fff;
+    }
+
+    /* PROGRESS BAR */
+    .progress-bar {
+      height: 2px;
+      background: var(--dark-divider);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--ember);
+      transition: width 0.3s;
+    }
+
+    /* COUNTER */
+    .counter-row {
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .counter-text {
+      font-size: 12px;
+      color: var(--stone);
+    }
+
+    .nav-btns {
+      display: flex;
+      gap: 6px;
+    }
+
+    .nav-btn {
+      background: none;
+      border: 1px solid var(--dark-divider);
+      color: var(--stone);
+      border-radius: 4px;
+      padding: 4px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .nav-btn:disabled {
+      color: var(--dark-divider);
+      cursor: not-allowed;
+    }
+
+    /* HERO IMAGE */
+    .hero-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .no-image {
+      height: 80px;
+      background: var(--dark-surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: var(--stone);
+    }
+
+    /* LESSON CONTENT */
+    .lesson-content {
+      padding: 16px 20px;
+    }
+
+    .meta-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .tag {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.06em;
+    }
+
+    .tag-topic {
+      background: rgba(232, 136, 42, 0.2);
+      color: var(--ember);
+    }
+
+    .tag-style {
+      background: var(--dark-surface);
+      color: var(--stone);
+    }
+
+    .tag-words {
+      background: var(--dark-surface);
+      color: var(--stone);
+    }
+
+    .lesson-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: 22px;
+      line-height: 1.3;
+      color: var(--heading-text);
+      margin-bottom: 16px;
+    }
+
+    .flag-note-box {
+      background: rgba(232, 136, 42, 0.1);
+      border: 1px solid rgba(232, 136, 42, 0.3);
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: var(--ember);
+    }
+
+    .lesson-body p {
+      margin-bottom: 16px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--body-text);
+    }
+
+    .takeaway {
+      background: var(--dark-surface);
+      border-left: 3px solid var(--ember);
+      border-radius: 0 6px 6px 0;
+      padding: 14px 16px;
+      margin: 20px 0 16px;
+    }
+
+    .takeaway-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ember);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .takeaway-text {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--body-text);
+    }
+
+    /* ACCORDION */
+    .accordion-btn {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--dark-divider);
+      color: var(--stone);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      margin-bottom: 8px;
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .accordion-content {
+      display: none;
+      margin-bottom: 8px;
+    }
+
+    .accordion-content.open {
+      display: block;
+    }
+
+    /* QUIZ */
+    .quiz-question {
+      background: var(--dark-surface);
+      border: 1px solid var(--dark-divider);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+    }
+
+    .quiz-q-text {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--heading-text);
+      margin-bottom: 10px;
+    }
+
+    .quiz-option {
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      margin-bottom: 6px;
+      border: 1px solid var(--dark-divider);
+      color: var(--body-text);
+    }
+
+    .quiz-option.correct {
+      background: rgba(76, 175, 80, 0.15);
+      border-color: rgba(76, 175, 80, 0.5);
+      color: #81C784;
+    }
+
+    .quiz-tf {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      background: rgba(76, 175, 80, 0.15);
+      border: 1px solid rgba(76, 175, 80, 0.5);
+      color: #81C784;
+      margin-bottom: 6px;
+    }
+
+    .quiz-explanation {
+      font-size: 12px;
+      color: var(--stone);
+      font-style: italic;
+      margin-top: 6px;
+    }
+
+    /* SOURCES */
+    .source-item {
+      font-size: 12px;
+      color: var(--stone);
+      line-height: 1.6;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--dark-divider);
+    }
+
+    .source-item:last-child {
+      border-bottom: none;
+    }
+
+    /* ACTION BAR */
+    .action-bar {
+      position: sticky;
+      bottom: 0;
+      background: var(--dark-bg);
+      border-top: 1px solid var(--dark-divider);
+      padding: 16px 20px;
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-flag {
+      flex: 1;
+      background: transparent;
+      border: 1px solid var(--ember);
+      color: var(--ember);
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .btn-approve {
+      flex: 2;
+      background: var(--ember);
+      border: none;
+      color: #fff;
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .btn-approve:disabled,
+    .btn-flag:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .flag-input-area textarea {
+      width: 100%;
+      background: var(--dark-surface);
+      border: 1px solid var(--ember);
+      border-radius: 8px;
+      padding: 12px;
+      color: var(--heading-text);
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      resize: none;
+      min-height: 80px;
+      margin-bottom: 10px;
+    }
+
+    .flag-submit-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-cancel {
+      flex: 1;
+      background: transparent;
+      border: 1px solid var(--dark-divider);
+      color: var(--stone);
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .btn-submit-flag {
+      flex: 2;
+      background: var(--ember);
+      border: none;
+      color: #fff;
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .btn-submit-flag:disabled {
+      background: var(--dark-surface);
+      color: var(--stone);
+      cursor: not-allowed;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 24px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 14px;
+      color: #fff;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    /* EMPTY / LOADING */
+    .centered {
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--stone);
+      font-size: 15px;
+    }
+
+    .centered .icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+    }
+
+    /* CONFIG SCREEN */
+    .config-screen {
+      padding: 40px 24px;
+    }
+
+    .config-screen h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      color: var(--heading-text);
+      margin-bottom: 8px;
+    }
+
+    .config-screen p {
+      font-size: 14px;
+      color: var(--stone);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .config-field {
+      margin-bottom: 16px;
+    }
+
+    .config-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--stone);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .config-field input {
+      width: 100%;
+      background: var(--dark-surface);
+      border: 1px solid var(--dark-divider);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: var(--heading-text);
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .config-field input:focus {
+      outline: none;
+      border-color: var(--ember);
+    }
+
+    .btn-connect {
+      width: 100%;
+      background: var(--ember);
+      border: none;
+      color: #fff;
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div id="app"></div>
+
+<script>
+// ============================================================
+// SUPABASE CONFIG
+// Paste your credentials here and save the file
+// ============================================================
+const SAVED_URL = localStorage.getItem('sb_url') || '';
+const SAVED_KEY = localStorage.getItem('sb_key') || '';
+
+let supabaseClient = null;
+let lessons = [];
+let currentIndex = 0;
+let currentFilter = 'pending';
+let stats = { pending: 0, flagged: 0, approved: 0 };
+let showFlagInput = false;
+let quizOpen = false;
+let sourcesOpen = false;
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  if (SAVED_URL && SAVED_KEY) {
+    connectSupabase(SAVED_URL, SAVED_KEY);
+  } else {
+    renderConfig();
+  }
+}
+
+function connectSupabase(url, key) {
+  supabaseClient = supabase.createClient(url, key);
+  localStorage.setItem('sb_url', url);
+  localStorage.setItem('sb_key', key);
+  fetchLessons();
+}
+
+// ============================================================
+// DATA
+// ============================================================
+async function fetchLessons() {
+  renderLoading();
+
+  let query = supabaseClient
+    .from('lessons')
+    .select('id, title, topic, style_tag, word_count, body, key_takeaway, quiz, sources, hero_image_url, status, notes')
+    .order('topic', { ascending: true });
+
+  if (currentFilter === 'pending') {
+    query = query.eq('status', 'draft').is('notes', null);
+  } else if (currentFilter === 'flagged') {
+    query = query.not('notes', 'is', null);
+  } else if (currentFilter === 'approved') {
+    query = query.eq('status', 'approved');
+  }
+
+  const { data, error } = await query;
+  if (error) { alert('Error: ' + error.message); return; }
+
+  lessons = data || [];
+  currentIndex = 0;
+  showFlagInput = false;
+  quizOpen = false;
+  sourcesOpen = false;
+
+  await fetchStats();
+  render();
+}
+
+async function fetchStats() {
+  const { data } = await supabaseClient.from('lessons').select('status, notes');
+  if (!data) return;
+  stats.pending = data.filter(l => l.status === 'draft' && !l.notes).length;
+  stats.flagged = data.filter(l => l.notes !== null).length;
+  stats.approved = data.filter(l => l.status === 'approved').length;
+}
+
+async function approveLesson() {
+  const lesson = lessons[currentIndex];
+  if (!lesson) return;
+
+  const { error } = await supabaseClient
+    .from('lessons')
+    .update({ status: 'approved', notes: null })
+    .eq('id', lesson.id);
+
+  if (error) { alert('Error: ' + error.message); return; }
+
+  showToast('Approved ✓', '#4CAF50');
+  lessons.splice(currentIndex, 1);
+  if (currentIndex >= lessons.length) currentIndex = Math.max(0, lessons.length - 1);
+  showFlagInput = false;
+  quizOpen = false;
+  sourcesOpen = false;
+  await fetchStats();
+  render();
+}
+
+async function submitFlag(note) {
+  const lesson = lessons[currentIndex];
+  if (!lesson || !note.trim()) return;
+
+  const { error } = await supabaseClient
+    .from('lessons')
+    .update({ status: 'draft', notes: note.trim() })
+    .eq('id', lesson.id);
+
+  if (error) { alert('Error: ' + error.message); return; }
+
+  showToast('Flagged ⚑', '#E8882A');
+  lessons.splice(currentIndex, 1);
+  if (currentIndex >= lessons.length) currentIndex = Math.max(0, lessons.length - 1);
+  showFlagInput = false;
+  quizOpen = false;
+  sourcesOpen = false;
+  await fetchStats();
+  render();
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, color) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = color;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderLoading() {
+  document.getElementById('app').innerHTML = `
+    <div class="centered"><div class="icon">📚</div>Loading lessons...</div>
+  `;
+}
+
+function renderConfig() {
+  document.getElementById('app').innerHTML = `
+    <div class="config-screen">
+      <div style="font-family:'Playfair Display',serif;font-weight:900;font-size:22px;color:#E8882A;letter-spacing:0.08em;margin-bottom:20px;">FORGE</div>
+      <h2>QA Review Tool</h2>
+      <p>Enter your Supabase credentials to connect. These are saved locally on your device.</p>
+      <div class="config-field">
+        <label>Supabase Project URL</label>
+        <input type="text" id="sb-url" placeholder="https://xxxx.supabase.co" value="${SAVED_URL}" />
+      </div>
+      <div class="config-field">
+        <label>Supabase Anon Key</label>
+        <input type="password" id="sb-key" placeholder="eyJh..." value="${SAVED_KEY}" />
+      </div>
+      <button class="btn-connect" onclick="handleConnect()">Connect</button>
+    </div>
+  `;
+}
+
+function handleConnect() {
+  const url = document.getElementById('sb-url').value.trim();
+  const key = document.getElementById('sb-key').value.trim();
+  if (!url || !key) { alert('Please enter both fields.'); return; }
+  connectSupabase(url, key);
+}
+
+function render() {
+  const lesson = lessons[currentIndex];
+  const total = lessons.length;
+  const progressPct = total > 0 ? ((currentIndex) / total) * 100 : 100;
+
+  let html = `
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-top">
+        <div class="wordmark">FORGE</div>
+        <div class="header-label">QA Review</div>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value" style="color:#8A8275">${stats.pending}</div>
+          <div class="stat-label">Pending</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" style="color:#4CAF50">${stats.approved}</div>
+          <div class="stat-label">Approved</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" style="color:#E8882A">${stats.flagged}</div>
+          <div class="stat-label">Flagged</div>
+        </div>
+      </div>
+      <div class="tabs">
+        <button class="tab ${currentFilter === 'pending' ? 'active' : ''}" onclick="switchFilter('pending')">Pending</button>
+        <button class="tab ${currentFilter === 'flagged' ? 'active' : ''}" onclick="switchFilter('flagged')">Flagged</button>
+        <button class="tab ${currentFilter === 'approved' ? 'active' : ''}" onclick="switchFilter('approved')">Approved</button>
+      </div>
+    </div>
+  `;
+
+  if (!lesson) {
+    const emptyMessages = {
+      pending: { icon: '✓', text: 'All lessons reviewed' },
+      flagged: { icon: '⚑', text: 'No flagged lessons' },
+      approved: { icon: '📚', text: 'No approved lessons yet' }
+    };
+    const em = emptyMessages[currentFilter];
+    html += `<div class="centered"><div class="icon">${em.icon}</div>${em.text}</div>`;
+    document.getElementById('app').innerHTML = html;
+    return;
+  }
+
+  html += `
+    <!-- PROGRESS -->
+    <div class="progress-bar"><div class="progress-fill" style="width:${progressPct}%"></div></div>
+
+    <!-- COUNTER -->
+    <div class="counter-row">
+      <div class="counter-text">${currentIndex + 1} of ${total}</div>
+      <div class="nav-btns">
+        <button class="nav-btn" onclick="navigate(-1)" ${currentIndex === 0 ? 'disabled' : ''}>←</button>
+        <button class="nav-btn" onclick="navigate(1)" ${currentIndex === total - 1 ? 'disabled' : ''}>→</button>
+      </div>
+    </div>
+
+    <!-- HERO IMAGE -->
+    ${lesson.hero_image_url
+      ? `<img class="hero-image" src="${lesson.hero_image_url}" alt="${lesson.title}" onerror="this.style.display='none'" />`
+      : `<div class="no-image">No image yet</div>`
+    }
+
+    <!-- LESSON -->
+    <div class="lesson-content">
+      <div class="meta-tags">
+        <span class="tag tag-topic">${lesson.topic}</span>
+        <span class="tag tag-style">${lesson.style_tag}</span>
+        <span class="tag tag-words">${lesson.word_count} words</span>
+      </div>
+
+      <h1 class="lesson-title">${lesson.title}</h1>
+
+      ${lesson.notes ? `<div class="flag-note-box"><strong>Flag note:</strong> ${lesson.notes}</div>` : ''}
+
+      <div class="lesson-body">
+        ${(lesson.body || '').split('\n\n').map(p => `<p>${p}</p>`).join('')}
+      </div>
+
+      <div class="takeaway">
+        <div class="takeaway-label">Key Takeaway</div>
+        <div class="takeaway-text">${lesson.key_takeaway || ''}</div>
+      </div>
+
+      <!-- QUIZ ACCORDION -->
+      <button class="accordion-btn" onclick="toggleQuiz()">
+        <span>Quiz (${(lesson.quiz || []).length} questions)</span>
+        <span id="quiz-arrow">${quizOpen ? '▲' : '▼'}</span>
+      </button>
+      <div class="accordion-content ${quizOpen ? 'open' : ''}" id="quiz-content">
+        ${renderQuiz(lesson.quiz)}
+      </div>
+
+      <!-- SOURCES ACCORDION -->
+      <button class="accordion-btn" onclick="toggleSources()">
+        <span>Sources (${(lesson.sources || []).length})</span>
+        <span id="sources-arrow">${sourcesOpen ? '▲' : '▼'}</span>
+      </button>
+      <div class="accordion-content ${sourcesOpen ? 'open' : ''}" id="sources-content" style="margin-bottom:100px">
+        ${(lesson.sources || []).map(s => `<div class="source-item">${s}</div>`).join('')}
+      </div>
+    </div>
+
+    <!-- ACTION BAR -->
+    <div class="action-bar">
+      ${showFlagInput ? `
+        <div class="flag-input-area">
+          <textarea id="flag-note" placeholder="What's wrong with this lesson?"></textarea>
+          <div class="flag-submit-row">
+            <button class="btn-cancel" onclick="cancelFlag()">Cancel</button>
+            <button class="btn-submit-flag" id="submit-flag-btn" onclick="handleSubmitFlag()">Submit Flag</button>
+          </div>
+        </div>
+      ` : `
+        <div class="action-btns">
+          <button class="btn-flag" onclick="openFlag()">Flag</button>
+          <button class="btn-approve" onclick="approveLesson()">Approve</button>
+        </div>
+      `}
+    </div>
+  `;
+
+  document.getElementById('app').innerHTML = html;
+}
+
+function renderQuiz(quiz) {
+  if (!quiz || !quiz.length) return '<div style="padding:10px;color:#8A8275;font-size:13px;">No quiz found</div>';
+  return quiz.map((q, i) => `
+    <div class="quiz-question">
+      <div class="quiz-q-text">Q${i + 1}. ${q.question}</div>
+      ${q.type === 'multiple_choice' ? `
+        ${(q.options || []).map((opt, oi) => `
+          <div class="quiz-option ${oi === q.correct_index ? 'correct' : ''}">
+            ${oi === q.correct_index ? '✓ ' : ''}${opt}
+          </div>
+        `).join('')}
+      ` : `
+        <div class="quiz-tf">✓ ${q.correct ? 'True' : 'False'}</div>
+        ${q.explanation ? `<div class="quiz-explanation">${q.explanation}</div>` : ''}
+      `}
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// INTERACTIONS
+// ============================================================
+function switchFilter(f) {
+  currentFilter = f;
+  fetchLessons();
+}
+
+function navigate(dir) {
+  currentIndex = Math.max(0, Math.min(lessons.length - 1, currentIndex + dir));
+  showFlagInput = false;
+  quizOpen = false;
+  sourcesOpen = false;
+  render();
+}
+
+function toggleQuiz() {
+  quizOpen = !quizOpen;
+  render();
+}
+
+function toggleSources() {
+  sourcesOpen = !sourcesOpen;
+  render();
+}
+
+function openFlag() {
+  showFlagInput = true;
+  render();
+  setTimeout(() => document.getElementById('flag-note')?.focus(), 50);
+}
+
+function cancelFlag() {
+  showFlagInput = false;
+  render();
+}
+
+function handleSubmitFlag() {
+  const note = document.getElementById('flag-note')?.value || '';
+  if (!note.trim()) return;
+  submitFlag(note);
+}
+
+// ============================================================
+// START
+// ============================================================
+init();
+</script>
+</body>
+</html>
