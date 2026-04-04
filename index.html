@@ -735,18 +735,18 @@ function render() {
           <div class="stat-label">Pending</div>
         </div>
         <div class="stat">
-          <div class="stat-value" style="color:#4CAF50">${stats.approved}</div>
-          <div class="stat-label">Approved</div>
-        </div>
-        <div class="stat">
           <div class="stat-value" style="color:#E8882A">${stats.flagged}</div>
           <div class="stat-label">Flagged</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" style="color:#4CAF50">${stats.approved}</div>
+          <div class="stat-label">Approved</div>
         </div>
       </div>
       <div class="tabs">
         <button class="tab ${currentFilter === 'pending' ? 'active' : ''}" onclick="switchFilter('pending')">Pending</button>
-        <button class="tab ${currentFilter === 'flagged' ? 'active' : ''}" onclick="switchFilter('flagged')">Flagged</button>
         <button class="tab ${currentFilter === 'approved' ? 'active' : ''}" onclick="switchFilter('approved')">Approved</button>
+        <button class="tab ${currentFilter === 'flagged' ? 'active' : ''}" onclick="switchFilter('flagged')">Flagged</button>
       </div>
     </div>
   `;
