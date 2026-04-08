@@ -9,24 +9,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
   --ink: #18181B;
   --ember: #E8882A;
   --ember-light: #F0A040;
-  --warm-white: #FDFAF5;
-  --cream: #F5F1EA;
   --bg: #EFEFEA;
   --stone: #8A8275;
   --charcoal: #3D3A35;
   --dark-bg: #1C1C1A;
-  --dark-surface: #252522;
-  --dark-divider: #333330;
   --body-light: #3D3A35;
   --body-dark: #C4C0B8;
   --head-dark: #E8E4DC;
 }
-
 body {
   font-family: 'DM Sans', system-ui, sans-serif;
   background: var(--bg);
@@ -35,9 +29,8 @@ body {
   max-width: 480px;
   margin: 0 auto;
 }
-
-/* SETUP SCREEN */
-#setup {
+/* PASSWORD SCREEN */
+#lock {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -46,33 +39,30 @@ body {
   padding: 32px 24px;
   gap: 24px;
 }
-#setup h1 {
+.wordmark {
   font-family: 'Playfair Display', Georgia, serif;
   font-weight: 900;
-  font-size: 28px;
-  letter-spacing: 0.08em;
+  font-size: 24px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ember);
 }
-#setup p {
-  font-size: 14px;
-  color: var(--stone);
-  text-align: center;
-  line-height: 1.5;
-}
-#setup input {
+#lock p { font-size: 14px; color: var(--stone); }
+#lock input {
   width: 100%;
   padding: 14px 16px;
   border: 1.5px solid #D4CFC8;
   border-radius: 10px;
-  font-size: 14px;
+  font-size: 16px;
   font-family: inherit;
   background: white;
   color: var(--ink);
   outline: none;
+  text-align: center;
+  letter-spacing: 0.1em;
 }
-#setup input:focus { border-color: var(--ember); }
-#setup button {
+#lock input:focus { border-color: var(--ember); }
+#lock button {
   width: 100%;
   padding: 16px;
   background: var(--ember);
@@ -84,11 +74,13 @@ body {
   font-family: inherit;
   cursor: pointer;
 }
-
-/* MAIN APP */
+#lock .error {
+  font-size: 13px;
+  color: #C62828;
+  display: none;
+}
+/* APP */
 #app { display: none; }
-
-/* Header */
 .header {
   background: var(--dark-bg);
   padding: 16px 20px 0;
@@ -102,14 +94,6 @@ body {
   justify-content: space-between;
   margin-bottom: 16px;
 }
-.wordmark {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-weight: 900;
-  font-size: 20px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ember);
-}
 .qa-badge {
   font-size: 11px;
   font-weight: 600;
@@ -117,8 +101,6 @@ body {
   color: var(--stone);
   text-transform: uppercase;
 }
-
-/* Stats */
 .stats { display: flex; gap: 20px; margin-bottom: 16px; }
 .stat { text-align: center; }
 .stat-num {
@@ -130,14 +112,7 @@ body {
 }
 .stat-num.ember { color: var(--ember); }
 .stat-num.green { color: #6BCB77; }
-.stat-label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--stone);
-}
-
-/* Tabs */
+.stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--stone); }
 .tabs { display: flex; gap: 4px; padding-bottom: 1px; }
 .tab {
   flex: 1;
@@ -153,28 +128,18 @@ body {
   transition: all 0.15s;
 }
 .tab.active { color: var(--ember); border-bottom-color: var(--ember); }
-
-/* Lesson card */
 .card-wrap { padding: 16px 20px; }
-.nav-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
+.nav-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .nav-counter { font-size: 13px; color: var(--stone); }
 .nav-btns { display: flex; gap: 8px; }
 .nav-btn {
-  width: 36px;
-  height: 36px;
+  width: 36px; height: 36px;
   border: 1.5px solid #D4CFC8;
   border-radius: 8px;
   background: white;
   font-size: 16px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
 }
 .nav-btn:disabled { opacity: 0.3; cursor: default; }
 .lesson-image {
@@ -186,300 +151,162 @@ body {
   display: block;
   margin-bottom: 12px;
 }
-.lesson-meta {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
-}
+.lesson-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
 .chip {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 20px;
-  background: rgba(232,136,42,0.12);
-  color: var(--ember);
+  font-size: 11px; font-weight: 600;
+  padding: 4px 10px; border-radius: 20px;
+  background: rgba(232,136,42,0.12); color: var(--ember);
 }
 .chip.style { background: #EFEFEA; color: var(--stone); }
 .chip.words { background: #EFEFEA; color: var(--stone); }
 .lesson-title {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1.25;
-  color: var(--ink);
-  margin-bottom: 12px;
+  font-size: 20px; font-weight: 700; line-height: 1.25;
+  color: var(--ink); margin-bottom: 12px;
 }
-.lesson-body {
-  font-size: 14px;
-  line-height: 1.65;
-  color: var(--body-light);
-  margin-bottom: 12px;
-}
+.lesson-body { font-size: 14px; line-height: 1.65; color: var(--body-light); margin-bottom: 12px; }
 .lesson-body p { margin-bottom: 12px; }
 .lesson-body p:last-child { margin-bottom: 0; }
 .section-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--stone);
-  margin-bottom: 6px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--stone); margin-bottom: 6px;
 }
 .takeaway {
   background: #F0EDE8;
   border-left: 3px solid var(--ember);
   border-radius: 0 8px 8px 0;
   padding: 12px 14px;
-  font-size: 14px;
-  line-height: 1.55;
-  color: var(--charcoal);
-  margin-bottom: 16px;
+  font-size: 14px; line-height: 1.55;
+  color: var(--charcoal); margin-bottom: 16px;
 }
-
-/* Quiz */
 .quiz-section { margin-bottom: 16px; }
 .quiz-q {
-  background: white;
-  border: 1.5px solid #E8E4DC;
-  border-radius: 10px;
-  padding: 12px 14px;
-  margin-bottom: 8px;
+  background: white; border: 1.5px solid #E8E4DC;
+  border-radius: 10px; padding: 12px 14px; margin-bottom: 8px;
 }
-.quiz-question {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--ink);
-  margin-bottom: 8px;
-}
+.quiz-question { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
 .quiz-option { font-size: 13px; color: var(--body-light); padding: 3px 0; }
 .quiz-option.correct { color: #2E7D32; font-weight: 600; }
-
-/* Sources */
 .sources-section { margin-bottom: 24px; }
 .source {
-  font-size: 12px;
-  color: var(--stone);
-  line-height: 1.5;
-  margin-bottom: 6px;
-  padding-left: 12px;
-  border-left: 2px solid #D4CFC8;
+  font-size: 12px; color: var(--stone); line-height: 1.5;
+  margin-bottom: 6px; padding-left: 12px; border-left: 2px solid #D4CFC8;
 }
-
-/* Flag note */
 .flag-note {
-  background: #FFF3E0;
-  border: 1.5px solid var(--ember-light);
-  border-radius: 10px;
-  padding: 10px 12px;
-  font-size: 13px;
-  color: var(--charcoal);
-  margin-bottom: 16px;
-  font-style: italic;
+  background: #FFF3E0; border: 1.5px solid var(--ember-light);
+  border-radius: 10px; padding: 10px 12px;
+  font-size: 13px; color: var(--charcoal);
+  margin-bottom: 16px; font-style: italic;
 }
-
-/* Actions */
 .actions {
-  display: flex;
-  gap: 10px;
+  display: flex; gap: 10px;
   padding: 12px 20px 32px;
-  position: sticky;
-  bottom: 0;
+  position: sticky; bottom: 0;
   background: var(--bg);
 }
 .btn {
-  flex: 1;
-  padding: 16px;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  transition: opacity 0.15s;
+  flex: 1; padding: 16px; border: none;
+  border-radius: 12px; font-size: 16px; font-weight: 600;
+  font-family: inherit; cursor: pointer; transition: opacity 0.15s;
 }
 .btn:active { opacity: 0.8; }
 .btn-flag { background: white; border: 1.5px solid #D4CFC8; color: var(--charcoal); }
 .btn-approve { background: var(--ember); color: white; }
 .btn-unflag { background: white; border: 1.5px solid var(--ember); color: var(--ember); }
-
-/* Approved tab */
 .approved-wrap { padding: 16px 20px; }
 .topic-filter {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 12px;
-  scrollbar-width: none;
+  display: flex; gap: 8px; overflow-x: auto;
+  padding-bottom: 12px; scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
 }
 .topic-filter::-webkit-scrollbar { display: none; }
 .filter-chip {
-  white-space: nowrap;
-  padding: 7px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  border: 1.5px solid #D4CFC8;
-  background: white;
-  color: var(--stone);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: all 0.15s;
+  white-space: nowrap; padding: 7px 14px; border-radius: 20px;
+  font-size: 12px; font-weight: 600;
+  border: 1.5px solid #D4CFC8; background: white;
+  color: var(--stone); cursor: pointer; flex-shrink: 0; transition: all 0.15s;
 }
 .filter-chip.active { background: var(--ember); border-color: var(--ember); color: white; }
 .lesson-row {
-  display: flex;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid #E8E4DC;
-  align-items: flex-start;
+  display: flex; gap: 12px; padding: 12px 0;
+  border-bottom: 1px solid #E8E4DC; align-items: flex-start;
 }
 .lesson-row:last-child { border-bottom: none; }
 .row-thumb {
-  width: 72px;
-  height: 48px;
-  border-radius: 8px;
-  object-fit: cover;
-  background: #E0DDD7;
-  flex-shrink: 0;
+  width: 72px; height: 48px; border-radius: 8px;
+  object-fit: cover; background: #E0DDD7; flex-shrink: 0;
 }
 .row-info { flex: 1; min-width: 0; }
 .row-topic {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--ember);
-  margin-bottom: 3px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--ember); margin-bottom: 3px;
 }
 .row-title {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.3;
-  color: var(--ink);
+  font-size: 14px; font-weight: 700; line-height: 1.3; color: var(--ink);
 }
 .row-meta { font-size: 11px; color: var(--stone); margin-top: 3px; }
 .row-unapprove {
-  background: none;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  color: var(--stone);
-  padding: 4px;
-  flex-shrink: 0;
+  background: none; border: none; font-size: 18px;
+  cursor: pointer; color: var(--stone); padding: 4px; flex-shrink: 0;
 }
-
-/* Empty state */
 .empty { text-align: center; padding: 60px 24px; color: var(--stone); }
 .empty-icon { font-size: 40px; margin-bottom: 12px; }
 .empty-text { font-size: 15px; line-height: 1.5; }
-
-/* Modal */
 .modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 200;
-  display: flex;
-  align-items: flex-end;
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  z-index: 200; display: flex; align-items: flex-end;
 }
 .modal {
-  background: white;
-  border-radius: 20px 20px 0 0;
-  padding: 24px 20px 40px;
-  width: 100%;
+  background: white; border-radius: 20px 20px 0 0;
+  padding: 24px 20px 40px; width: 100%;
 }
 .modal h3 {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 16px;
+  font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 16px;
 }
 .modal textarea {
-  width: 100%;
-  min-height: 100px;
-  padding: 12px 14px;
-  border: 1.5px solid #D4CFC8;
-  border-radius: 10px;
-  font-size: 14px;
-  font-family: inherit;
-  resize: vertical;
-  outline: none;
-  color: var(--ink);
-  margin-bottom: 16px;
+  width: 100%; min-height: 100px; padding: 12px 14px;
+  border: 1.5px solid #D4CFC8; border-radius: 10px;
+  font-size: 14px; font-family: inherit; resize: vertical;
+  outline: none; color: var(--ink); margin-bottom: 16px;
 }
 .modal textarea:focus { border-color: var(--ember); }
 .modal-btns { display: flex; gap: 10px; }
 .modal-cancel {
-  flex: 1;
-  padding: 14px;
-  border: 1.5px solid #D4CFC8;
-  border-radius: 10px;
-  background: white;
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--charcoal);
-  cursor: pointer;
+  flex: 1; padding: 14px; border: 1.5px solid #D4CFC8;
+  border-radius: 10px; background: white;
+  font-family: inherit; font-size: 15px; font-weight: 600;
+  color: var(--charcoal); cursor: pointer;
 }
 .modal-submit {
-  flex: 2;
-  padding: 14px;
-  border: none;
-  border-radius: 10px;
-  background: var(--ember);
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 600;
-  color: white;
-  cursor: pointer;
+  flex: 2; padding: 14px; border: none; border-radius: 10px;
+  background: var(--ember); font-family: inherit;
+  font-size: 15px; font-weight: 600; color: white; cursor: pointer;
 }
-
-/* Toast */
 .toast {
-  position: fixed;
-  bottom: 100px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--ink);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-  z-index: 300;
-  opacity: 0;
-  transition: opacity 0.2s;
-  pointer-events: none;
-  white-space: nowrap;
+  position: fixed; bottom: 100px; left: 50%;
+  transform: translateX(-50%); background: var(--ink);
+  color: white; padding: 10px 20px; border-radius: 20px;
+  font-size: 13px; font-weight: 600; z-index: 300;
+  opacity: 0; transition: opacity 0.2s; pointer-events: none; white-space: nowrap;
 }
 .toast.show { opacity: 1; }
-
-/* Loading */
 .loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 24px;
-  color: var(--stone);
-  font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 80px 24px; color: var(--stone); font-size: 14px;
 }
 </style>
 </head>
 <body>
 
-<!-- SETUP -->
-<div id="setup">
+<!-- PASSWORD -->
+<div id="lock">
   <div class="wordmark">FORGE</div>
-  <p>Enter your Supabase credentials to begin QA review.</p>
-  <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
-    <input id="sb-url" type="url" placeholder="Supabase Project URL" autocomplete="off">
-    <input id="sb-key" type="password" placeholder="Supabase Anon Key" autocomplete="off">
-  </div>
-  <button onclick="initApp()">Connect</button>
+  <p>QA Review</p>
+  <input id="pw-input" type="password" placeholder="Password" autocomplete="off">
+  <div class="error" id="pw-error">Incorrect password</div>
+  <button onclick="checkPassword()">Enter</button>
 </div>
 
 <!-- APP -->
@@ -509,7 +336,6 @@ body {
       <button class="tab" onclick="switchTab('approved')">Approved</button>
     </div>
   </div>
-
   <div id="review-pane">
     <div class="card-wrap">
       <div class="nav-row">
@@ -519,11 +345,10 @@ body {
           <button class="nav-btn" id="btn-next" onclick="navigate(1)">&#8594;</button>
         </div>
       </div>
-      <div id="lesson-content"><div class="loading">Loading lessons...</div></div>
+      <div id="lesson-content"><div class="loading">Loading...</div></div>
     </div>
     <div class="actions" id="action-btns"></div>
   </div>
-
   <div id="approved-pane" style="display:none;">
     <div class="approved-wrap">
       <div class="topic-filter" id="topic-filter"></div>
@@ -536,7 +361,7 @@ body {
 <div class="modal-overlay" id="modal" style="display:none;" onclick="closeModal(event)">
   <div class="modal">
     <h3>Flag this lesson</h3>
-    <textarea id="flag-note" placeholder="Describe what's wrong (image, title, content, quiz...)"></textarea>
+    <textarea id="flag-note" placeholder="Describe what's wrong (title, content, quiz, image...)"></textarea>
     <div class="modal-btns">
       <button class="modal-cancel" onclick="closeModal()">Cancel</button>
       <button class="modal-submit" onclick="submitFlag()">Flag Lesson</button>
@@ -544,52 +369,62 @@ body {
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-const TOPICS = [
-  'Architecture','Arts & Music','Business','Culture','Geography',
-  'Health & Medicine','History','How Things Work','Philosophy',
-  'Politics & Government','Psychology','Science & Mathematics','Technology'
-];
+// ── CREDENTIALS (baked in) ────────────────────────────────
+var SUPABASE_URL = 'https://hmlliuqyqycxcaxcwfdq.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtbGxpdXF5cXljeGNheGN3ZmRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5ODExODYsImV4cCI6MjA5MDU1NzE4Nn0.TSayyfkI1tp95zUTOw7tGg8eDAFhAmuGjlwyMlxsFsU';
+var PASSWORD = 'forge2025';
 
-let supabase = null;
-let pendingLessons = [];
-let flaggedLessons = [];
-let approvedLessons = [];
-let currentTab = 'pending';
-let currentIndex = 0;
-let selectedTopic = 'All';
-
-function initApp() {
-  const url = document.getElementById('sb-url').value.trim();
-  const key = document.getElementById('sb-key').value.trim();
-  if (!url || !key) { alert('Please enter both fields.'); return; }
-  localStorage.setItem('sb_url', url);
-  localStorage.setItem('sb_key', key);
-  connect(url, key);
+// ── PASSWORD ──────────────────────────────────────────────
+function checkPassword() {
+  var pw = document.getElementById('pw-input').value;
+  if (pw === PASSWORD) {
+    document.getElementById('lock').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initSupabase();
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+  }
 }
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('pw-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkPassword();
+  });
+  // Auto-unlock if already authenticated this session
+  if (sessionStorage.getItem('qa_auth') === '1') {
+    document.getElementById('lock').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initSupabase();
+  }
+});
 
-function connect(url, key) {
-  supabase = window.supabase.createClient(url, key);
-  document.getElementById('setup').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
+// ── SUPABASE ──────────────────────────────────────────────
+var sb = null;
+function initSupabase() {
+  sessionStorage.setItem('qa_auth', '1');
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   loadAll();
 }
 
+// ── DATA ──────────────────────────────────────────────────
+var TOPICS = ['Architecture','Arts & Music','Business','Culture','Geography',
+  'Health & Medicine','History','How Things Work','Philosophy',
+  'Politics & Government','Psychology','Science & Mathematics','Technology'];
+
+var pendingLessons = [], flaggedLessons = [], approvedLessons = [];
+var currentTab = 'pending', currentIndex = 0, selectedTopic = 'All';
+
 async function loadAll() {
-  const { data, error } = await supabase
-    .from('lessons')
-    .select('id, title, topic, body, key_takeaway, quiz, sources, hero_image_url, status, notes, style_tag, word_count')
+  var res = await sb.from('lessons')
+    .select('id,title,topic,body,key_takeaway,quiz,sources,hero_image_url,status,notes,style_tag,word_count')
     .order('created_at', { ascending: true });
-
-  if (error) { showToast('Load error: ' + error.message); return; }
-
-  pendingLessons  = data.filter(l => l.status === 'draft' && !l.notes);
-  flaggedLessons  = data.filter(l => l.status === 'draft' && l.notes);
-  approvedLessons = data.filter(l => l.status === 'approved');
-
+  if (res.error) { showToast('Load error: ' + res.error.message); return; }
+  pendingLessons  = res.data.filter(function(l){ return l.status === 'draft' && !l.notes; });
+  flaggedLessons  = res.data.filter(function(l){ return l.status === 'draft' && l.notes; });
+  approvedLessons = res.data.filter(function(l){ return l.status === 'approved'; });
   updateStats();
   renderCurrent();
 }
@@ -601,76 +436,69 @@ function updateStats() {
 }
 
 function switchTab(tab) {
-  currentTab = tab;
-  currentIndex = 0;
-  document.querySelectorAll('.tab').forEach((t, i) => {
+  currentTab = tab; currentIndex = 0;
+  document.querySelectorAll('.tab').forEach(function(t, i) {
     t.classList.toggle('active', ['pending','flagged','approved'][i] === tab);
   });
   document.getElementById('review-pane').style.display   = tab !== 'approved' ? 'block' : 'none';
   document.getElementById('approved-pane').style.display = tab === 'approved'  ? 'block' : 'none';
-  if (tab === 'approved') renderApproved();
-  else renderCurrent();
+  if (tab === 'approved') renderApproved(); else renderCurrent();
 }
 
-function currentList() {
-  return currentTab === 'pending' ? pendingLessons : flaggedLessons;
-}
+function currentList() { return currentTab === 'pending' ? pendingLessons : flaggedLessons; }
 
 function navigate(dir) {
-  const list = currentList();
+  var list = currentList();
   currentIndex = Math.max(0, Math.min(list.length - 1, currentIndex + dir));
   renderCurrent();
 }
 
 function renderCurrent() {
-  const list    = currentList();
-  const content = document.getElementById('lesson-content');
-  const actions = document.getElementById('action-btns');
-  const counter = document.getElementById('nav-counter');
-  const prev    = document.getElementById('btn-prev');
-  const next    = document.getElementById('btn-next');
+  var list = currentList();
+  var content = document.getElementById('lesson-content');
+  var actions = document.getElementById('action-btns');
+  var counter = document.getElementById('nav-counter');
+  var prev = document.getElementById('btn-prev');
+  var next = document.getElementById('btn-next');
 
   if (!list.length) {
     content.innerHTML = '<div class="empty"><div class="empty-icon">&#10003;</div><div class="empty-text">' +
       (currentTab === 'pending' ? 'No pending lessons' : 'No flagged lessons') + '</div></div>';
-    actions.innerHTML = '';
-    counter.textContent = '';
-    prev.disabled = true;
-    next.disabled = true;
-    return;
+    actions.innerHTML = ''; counter.textContent = '';
+    prev.disabled = true; next.disabled = true; return;
   }
 
-  const lesson = list[currentIndex];
+  var lesson = list[currentIndex];
   counter.textContent = (currentIndex + 1) + ' of ' + list.length;
   prev.disabled = currentIndex === 0;
   next.disabled = currentIndex === list.length - 1;
 
-  const bodyHtml = (lesson.body || '').split('\n\n').filter(Boolean)
-    .map(p => '<p>' + p.trim() + '</p>').join('');
+  var bodyHtml = (lesson.body || '').split('\n\n').filter(Boolean)
+    .map(function(p){ return '<p>' + p.trim() + '</p>'; }).join('');
 
-  let quizHtml = '';
+  var quizHtml = '';
   if (lesson.quiz && lesson.quiz.length) {
     quizHtml = '<div class="quiz-section"><div class="section-label">Quiz</div>';
     lesson.quiz.forEach(function(q, qi) {
       quizHtml += '<div class="quiz-q"><div class="quiz-question">Q' + (qi+1) + '. ' + q.question + '</div>';
       if (q.type === 'multiple_choice') {
         ['A','B','C','D'].forEach(function(letter, i) {
-          if (q.options[i] !== undefined) {
-            const correct = i === q.correct_index;
-            quizHtml += '<div class="quiz-option' + (correct ? ' correct' : '') + '">' + letter + '. ' + q.options[i] + (correct ? ' &#10003;' : '') + '</div>';
+          if (q.options && q.options[i] !== undefined) {
+            var correct = i === q.correct_index;
+            quizHtml += '<div class="quiz-option' + (correct ? ' correct' : '') + '">' +
+              letter + '. ' + q.options[i] + (correct ? ' &#10003;' : '') + '</div>';
           }
         });
       } else {
         quizHtml += '<div class="quiz-option ' + (q.correct ? 'correct' : '') + '">True ' + (q.correct ? '&#10003;' : '') + '</div>';
         quizHtml += '<div class="quiz-option ' + (!q.correct ? 'correct' : '') + '">False ' + (!q.correct ? '&#10003;' : '') + '</div>';
-        if (!q.correct && q.explanation) quizHtml += '<div class="quiz-option" style="font-size:12px;color:var(--stone);margin-top:4px;">' + q.explanation + '</div>';
       }
       quizHtml += '</div>';
     });
     quizHtml += '</div>';
   }
 
-  let sourcesHtml = '';
+  var sourcesHtml = '';
   if (lesson.sources && lesson.sources.length) {
     sourcesHtml = '<div class="sources-section"><div class="section-label">Sources</div>';
     lesson.sources.forEach(function(s) {
@@ -679,13 +507,12 @@ function renderCurrent() {
     sourcesHtml += '</div>';
   }
 
-  const flagNote = lesson.notes ? '<div class="flag-note">&#9873; ' + lesson.notes + '</div>' : '';
-  const imgHtml  = lesson.hero_image_url
+  var flagNote = lesson.notes ? '<div class="flag-note">&#9873; ' + lesson.notes + '</div>' : '';
+  var imgHtml = lesson.hero_image_url
     ? '<img class="lesson-image" src="' + lesson.hero_image_url + '" loading="lazy" alt="">'
     : '<div class="lesson-image"></div>';
 
-  content.innerHTML =
-    imgHtml +
+  content.innerHTML = imgHtml +
     '<div class="lesson-meta">' +
       '<span class="chip">' + (lesson.topic || '') + '</span>' +
       (lesson.style_tag ? '<span class="chip style">' + lesson.style_tag + '</span>' : '') +
@@ -696,70 +523,49 @@ function renderCurrent() {
     '<div class="lesson-body">' + bodyHtml + '</div>' +
     '<div class="section-label" style="margin-bottom:6px;">Key Takeaway</div>' +
     '<div class="takeaway">' + (lesson.key_takeaway || '') + '</div>' +
-    quizHtml +
-    sourcesHtml;
+    quizHtml + sourcesHtml;
 
-  if (currentTab === 'pending') {
-    actions.innerHTML =
-      '<button class="btn btn-flag" onclick="openModal()">Flag</button>' +
+  actions.innerHTML = currentTab === 'pending'
+    ? '<button class="btn btn-flag" onclick="openModal()">Flag</button>' +
+      '<button class="btn btn-approve" onclick="approveLesson(\'' + lesson.id + '\')">Approve</button>'
+    : '<button class="btn btn-unflag" onclick="unflagLesson(\'' + lesson.id + '\')">Move to Pending</button>' +
       '<button class="btn btn-approve" onclick="approveLesson(\'' + lesson.id + '\')">Approve</button>';
-  } else {
-    actions.innerHTML =
-      '<button class="btn btn-unflag" onclick="unflagLesson(\'' + lesson.id + '\')">Move to Pending</button>' +
-      '<button class="btn btn-approve" onclick="approveLesson(\'' + lesson.id + '\')">Approve</button>';
-  }
 }
 
 function renderApproved() {
-  renderTopicFilter();
-  renderApprovedList();
-}
-
-function renderTopicFilter() {
-  const wrap = document.getElementById('topic-filter');
-  const all  = ['All'].concat(TOPICS);
-  wrap.innerHTML = all.map(function(t) {
-    return '<button class="filter-chip' + (selectedTopic === t ? ' active' : '') + '" onclick="selectTopic(\'' + t + '\')">' + t + '</button>';
+  var wrap = document.getElementById('topic-filter');
+  wrap.innerHTML = ['All'].concat(TOPICS).map(function(t) {
+    return '<button class="filter-chip' + (selectedTopic === t ? ' active' : '') +
+      '" onclick="selectTopic(\'' + t + '\')">' + t + '</button>';
   }).join('');
-}
-
-function selectTopic(topic) {
-  selectedTopic = topic;
-  renderTopicFilter();
-  renderApprovedList();
-}
-
-function renderApprovedList() {
-  const list     = document.getElementById('approved-list');
-  const filtered = selectedTopic === 'All'
-    ? approvedLessons
-    : approvedLessons.filter(function(l) { return l.topic === selectedTopic; });
-
+  var list = document.getElementById('approved-list');
+  var filtered = selectedTopic === 'All' ? approvedLessons
+    : approvedLessons.filter(function(l){ return l.topic === selectedTopic; });
   if (!filtered.length) {
     list.innerHTML = '<div class="empty"><div class="empty-text">No approved lessons' +
       (selectedTopic !== 'All' ? ' for ' + selectedTopic : '') + '</div></div>';
     return;
   }
-
   list.innerHTML = filtered.map(function(l) {
-    const thumb = l.hero_image_url
+    var thumb = l.hero_image_url
       ? '<img class="row-thumb" src="' + l.hero_image_url + '" loading="lazy" alt="">'
       : '<div class="row-thumb"></div>';
-    return '<div class="lesson-row">' +
-      thumb +
+    return '<div class="lesson-row">' + thumb +
       '<div class="row-info">' +
         '<div class="row-topic">' + l.topic + '</div>' +
         '<div class="row-title">' + l.title + '</div>' +
         '<div class="row-meta">' + (l.style_tag || '') + (l.word_count ? ' &middot; ' + l.word_count + ' words' : '') + '</div>' +
       '</div>' +
-      '<button class="row-unapprove" onclick="unapproveLesson(\'' + l.id + '\')" title="Move back to pending">&#8617;</button>' +
+      '<button class="row-unapprove" onclick="unapproveLesson(\'' + l.id + '\')">&#8617;</button>' +
     '</div>';
   }).join('');
 }
 
+function selectTopic(t) { selectedTopic = t; renderApproved(); }
+
 async function approveLesson(id) {
-  const { error } = await supabase.from('lessons').update({ status: 'approved', notes: null }).eq('id', id);
-  if (error) { showToast('Error: ' + error.message); return; }
+  var r = await sb.from('lessons').update({ status: 'approved', notes: null }).eq('id', id);
+  if (r.error) { showToast('Error: ' + r.error.message); return; }
   showToast('Approved');
   await loadAll();
   if (currentIndex >= currentList().length) currentIndex = Math.max(0, currentList().length - 1);
@@ -767,26 +573,22 @@ async function approveLesson(id) {
 }
 
 async function unapproveLesson(id) {
-  const { error } = await supabase.from('lessons').update({ status: 'draft', notes: null }).eq('id', id);
-  if (error) { showToast('Error: ' + error.message); return; }
+  var r = await sb.from('lessons').update({ status: 'draft', notes: null }).eq('id', id);
+  if (r.error) { showToast('Error: ' + r.error.message); return; }
   showToast('Moved to Pending');
-  await loadAll();
-  renderApproved();
+  await loadAll(); renderApproved();
 }
 
 async function unflagLesson(id) {
-  const { error } = await supabase.from('lessons').update({ notes: null }).eq('id', id);
-  if (error) { showToast('Error: ' + error.message); return; }
+  var r = await sb.from('lessons').update({ notes: null }).eq('id', id);
+  if (r.error) { showToast('Error: ' + r.error.message); return; }
   showToast('Moved to Pending');
   await loadAll();
   if (currentIndex >= currentList().length) currentIndex = Math.max(0, currentList().length - 1);
   renderCurrent();
 }
 
-function openModal() {
-  document.getElementById('modal').style.display = 'flex';
-}
-
+function openModal() { document.getElementById('modal').style.display = 'flex'; }
 function closeModal(e) {
   if (!e || e.target === document.getElementById('modal')) {
     document.getElementById('modal').style.display = 'none';
@@ -795,29 +597,22 @@ function closeModal(e) {
 }
 
 async function submitFlag() {
-  const note   = document.getElementById('flag-note').value.trim();
+  var note = document.getElementById('flag-note').value.trim();
   if (!note) { alert('Please describe what needs fixing.'); return; }
-  const lesson = currentList()[currentIndex];
-  const { error } = await supabase.from('lessons').update({ notes: note }).eq('id', lesson.id);
-  if (error) { showToast('Error: ' + error.message); return; }
-  closeModal();
-  showToast('Flagged');
+  var lesson = currentList()[currentIndex];
+  var r = await sb.from('lessons').update({ notes: note }).eq('id', lesson.id);
+  if (r.error) { showToast('Error: ' + r.error.message); return; }
+  closeModal(); showToast('Flagged');
   await loadAll();
   if (currentIndex >= currentList().length) currentIndex = Math.max(0, currentList().length - 1);
   renderCurrent();
 }
 
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(function() { t.classList.remove('show'); }, 2000);
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2000);
 }
-
-// Auto-connect if credentials saved
-const savedUrl = localStorage.getItem('sb_url');
-const savedKey = localStorage.getItem('sb_key');
-if (savedUrl && savedKey) connect(savedUrl, savedKey);
 </script>
 </body>
 </html>
